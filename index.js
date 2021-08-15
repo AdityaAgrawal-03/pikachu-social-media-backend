@@ -20,11 +20,9 @@ app.get('/', (req, res) => {
 
 app.use("/signup", signup);
 app.use("/login", login);
-
 app.use(authVerify);
 app.use("/posts", posts);
 app.use("/users", users)
-
 
 app.listen(3000, () => {
   console.log('server started');

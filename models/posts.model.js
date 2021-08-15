@@ -6,7 +6,7 @@ const CommentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User"
   },
-  comment: {
+  text: {
     type: String,
     required: "Cannot add blank comment"
   }

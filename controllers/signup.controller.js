@@ -9,7 +9,7 @@ const signupUser = async (req, res) => {
     const salt = await brcypt.genSalt(10);
     password = await brcypt.hash(password, salt);
 
-    const user = new User({ name, username, email, password });
+    const user = new User({ name, username, email, password, bio: "" });
     await user.save();
     const token = jwt.sign({ userId: user._id }, secret, { expiresIn: "24h" });
 
@@ -19,5 +19,7 @@ const signupUser = async (req, res) => {
     res.json({ success: false, errorMessage: errorMessage })
   }
 };
+
+// if user signs up, guide him to add his bio by going to his profile section
 
 module.exports = { signupUser };

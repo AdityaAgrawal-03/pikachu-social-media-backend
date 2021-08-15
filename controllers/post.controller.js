@@ -1,10 +1,11 @@
 const { Post } = require("../models/posts.model");
+const { User } = require("../models/user.model");
 
 const fetchPosts = async (req, res) => {
   try {
     const { userId } = req.user;
     const posts = await Post.find({}).populate("user");
-    res.json({ success: true, posts })
+    res.json({ success: true, posts, userId })
   } catch (error) {
     res.json({ success: false, errorMessage: error.message })
   }
@@ -13,9 +14,10 @@ const fetchPosts = async (req, res) => {
 const addPost = async (req, res) => {
   try {
     const { userId } = req.user;
+    const user = await User.findById(userId)
     const { content } = req.body;
     const newPost = new Post({
-      user: userId,
+      user,
       content
     })
     await newPost.save();
@@ -27,7 +29,7 @@ const addPost = async (req, res) => {
 
 const getPostById = async (req, res, next, id) => {
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(id).populate("comment.user");
 
     if (!post) {
       return res.status(404).json({ success: false, message: "post not found" })
@@ -54,9 +56,6 @@ const deletePost = async (req, res) => {
     const post = req.post;
     const { userId } = req.user;
 
-    console.log(typeof post.user);
-    console.log(userId)
-
     if (post.user.toString() === userId) {
       await Post.findByIdAndDelete(post._id)
 
@@ -80,7 +79,7 @@ const likePost = async (req, res) => {
 
     await post.save()
 
-    res.json({ success: true, post })
+    res.json({ success: true, post, userId })
   } catch (error) {
     res.json({ success: false, errorMessage: error.message })
   }
@@ -89,17 +88,12 @@ const likePost = async (req, res) => {
 const commentOnPost = async (req, res) => {
   try {
     const { userId } = req.user;
-    const { postId } = req.params;
     const { comment } = req.body;
-    console.log(comment);
-
-    const postToBeCommented = await Post.findById(postId);
-
-    const comments = postToBeCommented.comment.push({ user: userId, comment: comment })
-    console.log({ comments });
-
-    await postToBeCommented.save();
-    res.json({ success: true, postToBeCommented })
+    const post = req.post;
+    
+    post.comment.push({ user: userId, text: comment })
+    await post.save();
+    res.json({ success: true, post })
 
   } catch (error) {
     res.json({ success: false, errorMessage: error.message })
