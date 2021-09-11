@@ -48,7 +48,7 @@ const updateFollowingAndFollowers = async (req, res) => {
     const sourceUser = await User.findOne({ username: username });
     const targetUser = await User.findById(target_userId);
     console.log({ targetUser });
-    console.log(typeof sourceUser._id)
+    console.log({ sourceUser })
     const isInFollowing = sourceUser.following.find(userId => userId.toString() === target_userId);
 
     if (isInFollowing) {

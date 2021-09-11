@@ -29,7 +29,7 @@ const addPost = async (req, res) => {
 
 const getPostById = async (req, res, next, id) => {
   try {
-    const post = await Post.findById(id).populate("comment.user");
+    const post = await Post.findById(id);
 
     if (!post) {
       return res.status(404).json({ success: false, message: "post not found" })
@@ -57,12 +57,11 @@ const deletePost = async (req, res) => {
     const { userId } = req.user;
 
     if (post.user.toString() === userId) {
+
       await Post.findByIdAndDelete(post._id)
 
       return res.json({ success: true, deletedPost: post, message: "successfully deleted" })
     } res.json({ success: false, message: "unauthorized" })
-
-
   } catch (error) {
     res.json({ success: false, errorMessage: error.message })
   }
@@ -90,7 +89,9 @@ const commentOnPost = async (req, res) => {
     const { userId } = req.user;
     const { comment } = req.body;
     const post = req.post;
-    
+
+    console.log({ post })
+
     post.comment.push({ user: userId, text: comment })
     await post.save();
     res.json({ success: true, post })

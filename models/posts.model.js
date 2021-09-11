@@ -10,6 +10,8 @@ const CommentSchema = new Schema({
     type: String,
     required: "Cannot add blank comment"
   }
+}, {
+  timestamps: true
 })
 
 const PostSchema = new Schema({

@@ -14,7 +14,6 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: "Cannot add user without email",
-    
   },
   password: {
     type: String,
