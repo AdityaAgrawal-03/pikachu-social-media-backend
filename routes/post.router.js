@@ -1,6 +1,6 @@
 const express = require("express");
 const postRouter = express.Router();
-const { fetchPosts, addPost, getPostById, likePost, commentOnPost, fetchPost, deletePost } = require("../controllers/post.controller")
+const { fetchPosts, addPost, getPostById, likePost, commentOnPost, fetchPost, deletePost, deleteComment } = require("../controllers/post.controller")
 
 postRouter.route("/")
   .get(fetchPosts)
@@ -20,5 +20,9 @@ postRouter.route("/like/:postId")
 // add or delete comment
 postRouter.route("/comment/:postId")
   .post(commentOnPost)
+
+postRouter.route("/comment/:postId/:commentId")
+  .delete(deleteComment)
+  
 
 module.exports = postRouter;

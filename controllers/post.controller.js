@@ -101,4 +101,22 @@ const commentOnPost = async (req, res) => {
   }
 }
 
-module.exports = { fetchPosts, addPost, getPostById, fetchPost, deletePost, likePost, commentOnPost };
+const deleteComment = async (req, res) => {
+  try {
+    const { userId } = req.user;
+    const { commentId } = req.params;
+
+    const post = req.post
+
+    const commentToBeDeleted = post.comment.find(({_id}) => _id.toString() === commentId);
+
+    post.comment.pull(commentToBeDeleted)
+    await post.save();
+
+    res.json({ success: true, commentToBeDeleted, message: "comment deleted!", post: post._id  })
+  } catch (error) {
+    res.json({ success: false, errorMessage: error.message })
+  }
+}
+
+module.exports = { fetchPosts, addPost, getPostById, fetchPost, deletePost, likePost, commentOnPost, deleteComment };
